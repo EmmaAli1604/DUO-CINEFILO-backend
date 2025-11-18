@@ -76,13 +76,58 @@ def login(request):
     with connection.cursor() as cursor:
         cursor.execute(
             "UPDATE usuario SET token = %s WHERE Idusuario = %s AND password = %s",
-            [bearer_token, username, password],
+            [raw_token, username, hashPass],
         )
+        print("estoy haciendo el update")
 
     return Response(
         {
             "username": username,
             "token": bearer_token,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def logout(request):
+    """
+        Recibe un JSON con el username, un header con el token y busca el usuario en la BD externa (Postgres),
+        quita el token de la tabla de usuario.
+
+        Request JSON:
+            {
+                "Idusuario": "mi_usuario"
+            }
+
+        RESPONSE 200 JSON:
+            {
+                "mensaje": "Usuario desconectado correctamente."
+            }
+    """
+    username = request.data.get("IdUsuario")
+    token = request.headers.get("Authorization")
+    print(token)
+    token = token.split(" ")[1] if token else None
+    if not username:
+        return Response(
+            {"detail": "El campo 'Idusuario' es obligatorio."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    if not token:
+        return Response(
+            {"detail": "El campo 'Authorization' es obligatorio."},
+        )
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "UPDATE usuario SET token = NULL WHERE Idusuario = %s AND token = %s",
+            [username, token],
+        )
+
+    return Response(
+        {
+            "mensaje": "Usuario desconectado correctamente."
         },
         status=status.HTTP_200_OK,
     )
