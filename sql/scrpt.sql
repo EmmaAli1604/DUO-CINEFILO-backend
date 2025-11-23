@@ -4,11 +4,14 @@
 -- SELECT * FROM usuario WHERE Idusuario = 'kyogre235' AND Password = 'hola';
 
 -- 1. Eliminación de tablas si ya existen (en orden inverso de dependencia)
+drop table if exists PeliculaEtiqueta;
 DROP TABLE IF EXISTS Comentario;
 DROP TABLE IF EXISTS Horario;
 DROP TABLE IF EXISTS Usuario;
+drop table if exists Etiqueta;
 DROP TABLE IF EXISTS Pelicula;
 DROP TABLE IF EXISTS Cineteca;
+
 
 -- -----------------------------------------------------
 -- Tabla: Cineteca
@@ -34,7 +37,8 @@ CREATE TABLE Pelicula (
   Productora VARCHAR(50),
   Año SMALLINT,
   Calificacion REAL,
-  Poster VARCHAR(50)
+  Poster VARCHAR(50),
+  Trailer VARCHAR(50)
 );
 
 COMMENT ON COLUMN Pelicula.IdPelicula IS 'Identificador único de la película (Llave Primaria)';
@@ -44,6 +48,7 @@ COMMENT ON COLUMN Pelicula.Productora IS 'Casa productora que realizó la pelíc
 COMMENT ON COLUMN Pelicula.Año IS 'Año de estreno de la película';
 COMMENT ON COLUMN Pelicula.Calificacion IS 'Calificación promedio de la película (ej: 8.5)';
 COMMENT ON COLUMN Pelicula.Poster IS 'Ruta o URL de la imagen del póster';
+comment on column Pelicula.Trailer is 'Ruta o URL del trailer (si esta disponible)';
 
 
 -- -----------------------------------------------------
@@ -105,6 +110,7 @@ CREATE TABLE Comentario (
   IdComentario BIGINT PRIMARY KEY,
   IdUsuario VARCHAR(15) NOT NULL,
   IdPelicula BIGINT NOT NULL,
+  Calificacion BIGINT not NULL,
   Texto VARCHAR(500),
   
   -- Definición de Llaves Foráneas
@@ -123,4 +129,39 @@ CREATE TABLE Comentario (
 COMMENT ON COLUMN Comentario.IdComentario IS 'Identificador único del comentario (Llave Primaria)';
 COMMENT ON COLUMN Comentario.IdUsuario IS 'Llave foránea que referencia al usuario que escribió el comentario';
 COMMENT ON COLUMN Comentario.IdPelicula IS 'Llave foránea que referencia a la película comentada';
+comment on column Comentario.Calificacion is 'Cantidad de estrellas en el comentario';
 COMMENT ON COLUMN Comentario.Texto IS 'Contenido textual del comentario';
+
+-- -----------------------------------------------------
+-- Tabla: PeliculaEtiqueta
+-- -----------------------------------------------------
+create table Etiqueta (
+	IdEtiqueta bigint primary key,
+	Nombre varchar(50)
+);
+
+comment on column Etiqueta.IdEtiqueta is 'Llave primaria de la tabla Etiqueta';
+comment on column Etiqueta.Nombre is 'El nombre que tiene a etiqueta Ej. Terror, Drama, etc.';
+
+-- -----------------------------------------------------
+-- Tabla: PeliculaEtiqueta
+-- -----------------------------------------------------
+
+create table PeliculaEtiqueta (
+	IdEtiqueta bigint not null,
+	IdPelicula bigint not null,
+	
+	constraint fk_etiqueta
+		foreign key (IdEtiqueta)
+		references Etiqueta (IdEtiqueta)
+		on delete cascade 
+		on update cascade,
+	constraint fk_pelicula
+		foreign key (IdPelicula)
+		references Pelicula (IdPelicula)
+		on delete cascade
+		on update cascade
+);
+
+comment on column PeliculaEtiqueta.IdEtiqueta is 'PK de la etiqueta';
+comment on column PeliculaEtiqueta.IdPelicula is 'PK de la pelicula';
