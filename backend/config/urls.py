@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from catalog.views import list_movies  # <-- importa la vista
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
+    path('api/peliculas/', list_movies, name='list_movies'),  # <-- nueva ruta
 ]
