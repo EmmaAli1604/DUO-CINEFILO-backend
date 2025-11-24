@@ -1,53 +1,125 @@
-from django.http import JsonResponse
+import json
 from django.db import connection
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Pelicula
+from users.models import Usuario
 
-def list_movies(request):
-    """Devuelve una lista de películas almacenadas en la base de datos.
+def lista_peliculas(request):
+    peliculas_queryset = Pelicula.objects.all().values(
+        'id', 'nombre', 'director', 'productora', 'año',
+        'calificacion', 'poster', 'trailer'
+    )
 
-    Esta vista ejecuta una consulta SQL sobre la tabla ``Pelicula`` para obtener
-    información básica de cada película. Luego normaliza los resultados al
-    formato esperado por el frontend React y los devuelve en formato JSON.
+    lista_peliculas = list(peliculas_queryset)
+    return JsonResponse(lista_peliculas, safe=False)
 
-    Args:
-        request (HttpRequest): Solicitud HTTP recibida desde el frontend.
 
-    Returns:
-        JsonResponse: Lista de diccionarios con la información de cada película,
-        utilizando llaves como ``id``, ``title``, ``director``, ``producer``,
-        ``year``, ``rating``, ``imageUrl`` y ``trailer``.
+@csrf_exempt
+def peliculas_por_etiqueta(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-    Raises:
-        django.db.Error: Si la consulta SQL falla; Django gestionará la
-        excepción mediante su sistema de errores.
-    """
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return JsonResponse({'error': 'Falta token'}, status=401)
+
+    token_recibido = auth_header.split(' ')[1]
+
+    # --- USO DEL MODELO IMPORTADO ---
+    # Django busca en la tabla definida en users/models.py
+    if not Usuario.objects.filter(token=token_recibido).exists():
+        return JsonResponse({'error': 'Token inválido o expirado'}, status=401)
+
+    try:
+        data = json.loads(request.body)
+        id_etiqueta = data.get('idetiqueta')
+
+        if id_etiqueta is None:
+            return JsonResponse({'error': 'Falta el campo id_etiqueta en el JSON'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'JSON mal formado'}, status=400)
+
+        # ---------------------------------------------------------
+        # 3. CONSULTA: JOIN manual usando SQL directo
+        # ---------------------------------------------------------
+        # Hacemos esto porque configurar ManyToMany con tablas legacy en Django es complejo.
+        # El SQL es más directo y eficiente aquí.
+
+    query = """
+            SELECT p."idpelicula", p."nombre", p."director", p."año", p."poster"
+            FROM Pelicula p
+            INNER JOIN PeliculaEtiqueta pe ON p."idpelicula" = pe."idpelicula"
+            WHERE pe."idetiqueta" = %s
+        """
+
+    # Nota sobre las comillas: Depende de cómo creaste tu tabla.
+    # Si Postgres las hizo minúsculas, quita las comillas dobles en el SQL de arriba.
+
+    lista_resultado = []
+
     with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT 
-                IdPelicula,
-                Nombre,
-                Director,
-                Productora,
-                Año,
-                Calificacion,
-                Poster,
-                Trailer
-            FROM Pelicula
-        """)
+        cursor.execute(query, [id_etiqueta])
         rows = cursor.fetchall()
 
-    movies = [
-        {
-            "id": str(r[0]),
-            "title": r[1],
-            "director": r[2],
-            "producer": r[3],
-            "year": r[4],
-            "rating": r[5],
-            "imageUrl": r[6],
-            "trailer": r[7],
-            "duration": ""
-        }
-        for r in rows
-    ]
+        # Mapeamos los resultados (tuplas) a diccionarios
+        for row in rows:
+            peli = {
+                'id': row[0],
+                'nombre': row[1],
+                'director': row[2],
+                'año': row[3],
+                'poster': row[4]
+                # Puedes agregar más campos si los pones en el SELECT
+            }
+            lista_resultado.append(peli)
 
-    return JsonResponse(movies, safe=False)
+    return JsonResponse({
+        'etiqueta_solicitada': id_etiqueta,
+        'cantidad': len(lista_resultado),
+        'peliculas': lista_resultado
+    }, safe=False)
+
+
+@csrf_exempt
+def buscar_pelicula_json(request):
+
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido. Usa POST y envía un JSON.'}, status=405)
+
+
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return JsonResponse({'error': 'Falta el header Authorization con Bearer token'}, status=401)
+
+    token_recibido = auth_header.split(' ')[1]
+
+
+    if not Usuario.objects.filter(token=token_recibido).exists():
+        return JsonResponse({'error': 'Token inválido o expirado'}, status=401)
+
+
+    try:
+        data = json.loads(request.body)
+        nombre_busqueda = data.get('nombre')  # Buscamos la clave "nombre"
+
+        if not nombre_busqueda:
+            return JsonResponse({'error': 'El JSON debe contener el campo "nombre"'}, status=400)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'JSON mal formado'}, status=400)
+
+    # 4. BÚSQUEDA EN BASE DE DATOS
+    # Usamos __icontains para buscar coincidencias (insensitive case)
+    # Si quieres coincidencia EXACTA, cambia __icontains por el signo igual (=)
+    qs = Pelicula.objects.filter(nombre__icontains=nombre_busqueda).values(
+        'id', 'nombre', 'director', 'productora', 'año',
+        'calificacion', 'poster', 'trailer'
+    )
+
+    resultados = list(qs)
+
+    return JsonResponse({
+        'cantidad': len(resultados),
+        'peliculas': resultados
+    }, safe=False)

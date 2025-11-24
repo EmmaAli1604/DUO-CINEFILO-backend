@@ -1,10 +1,10 @@
 """
-Archivo de configuración principal de rutas del proyecto Django.
+Archivo de configuraciï¿½n principal de rutas del proyecto Django.
 
-Define los endpoints de nivel superior y enlaza los módulos correspondientes:
+Define los endpoints de nivel superior y enlaza los mï¿½dulos correspondientes:
 - ``/admin/``: Panel administrativo de Django.
-- ``/api/users/``: Endpoints del módulo de usuarios (login, logout, registro).
-- ``/api/peliculas/``: Endpoint del catálogo de películas.
+- ``/api/users/``: Endpoints del mï¿½dulo de usuarios (login, logout, registro).
+- ``/api/peliculas/``: Endpoint del catï¿½logo de pelï¿½culas.
 
 Este archivo funciona como el enrutador central del backend.
 """
@@ -14,6 +14,6 @@ from catalog.views import list_movies  # <-- importa la vista
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),
-    path('api/peliculas/', list_movies, name='list_movies'),  # <-- nueva ruta
+    path('users/', include('users.urls')),
+    path('peliculas/', include('catalog.urls')),
 ]
