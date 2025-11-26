@@ -25,11 +25,11 @@
         <pattern>HOLA</pattern>
         <template>
             <![CDATA[
-                ¡Hola! Soy PAMY. ¿Qué deseas hacer hoy?
+                ¡Hola!, Soy CineDuo. ¿Qué deseas hacer hoy?
                 <br/><br/>
                 <button class="btn-opcion" onclick="enviarOpcion('VER CARTELERA')">🎬 Ver Cartelera</button>
                 <button class="btn-opcion" onclick="enviarOpcion('RECOMENDAR')">⭐ Recomiéndame algo</button>
-                <button class="btn-opcion" onclick="enviarOpcion('AYUDA')">❓ Ayuda</button>
+                <button class="btn-opcion" onclick="enviarOpcion('AYUDA')">❓ Ayuda</button> S
             ]]>
         </template>
     </category>
@@ -45,7 +45,56 @@
             ]]>
         </template>
     </category>
-
+    <category>
+        <pattern>BUSCAR POR NOMBRE</pattern>
+        <template>
+            <![CDATA[
+                Claro, ingresa el nombre de la pelicula a buscar  B
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>ESTOY BUSCANDO</pattern>
+        <template>
+            <![CDATA[
+               Acabo de buscar tu pelicula, estos son los resultados S
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>AYUDA</pattern>
+        <template>
+            <![CDATA[
+               si nesesitas ayuda de un ser humano, contacta a nuestro soporte tecnico mediante el correo: correoPlaceholder@fake.com S
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>RECOMENDAR</pattern>
+        <template>
+            <![CDATA[
+               Claro, te recomiendo la siguiente pelicula: R
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>GRACIAS</pattern>
+        <template>
+            <![CDATA[
+               No hay de que. Es un placer ayudarte.
+               <br/><br/>
+                <button class="btn-opcion" onclick="enviarOpcion('HOLA')">🔄 Ir al Inicio</button>
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>ADIOS *</pattern>
+        <template>
+            <![CDATA[
+               Fue un placer hablar contigo, vuelve pronto.
+            ]]>
+        </template>
+    </category>
     <!-- La regla genérica SIEMPRE debe ir al final para no interferir con las otras -->
     <category>
         <pattern>*</pattern>
