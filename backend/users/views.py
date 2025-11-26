@@ -40,8 +40,8 @@ def login(request):
                 "token": "Bearer abc123..."
             }
         """
-    username = request.data.get("IdUsuario")
-    password = request.data.get("Password")
+    username = request.data.get("idusuario")
+    password = request.data.get("password")
     algo = ""
 
     if not username:
@@ -83,7 +83,7 @@ def login(request):
     return Response(
         {
             "username": username,
-            "token": bearer_token,
+            "token": raw_token,
         },
         status=status.HTTP_200_OK,
     )
@@ -105,7 +105,7 @@ def logout(request):
                 "mensaje": "Usuario desconectado correctamente."
             }
     """
-    username = request.data.get("IdUsuario")
+    username = request.data.get("idusuario")
     token = request.headers.get("Authorization")
     print(token)
     token = token.split(" ")[1] if token else None

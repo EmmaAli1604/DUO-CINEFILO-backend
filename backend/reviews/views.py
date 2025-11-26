@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from users.models import Usuario
 from catalog.models import Pelicula
 from .models import Comentario
+from django.utils import timezone
 import time
 import random
 
@@ -72,8 +73,9 @@ def crear_comentario(request):
             id_comentario=generar_id_comentario(),
             usuario_id=id_usuario_body,  # Django usa _id para asignar la FK directa
             pelicula_id=id_pelicula,
-            calificacion=0,
-            texto=texto_comentario
+            calificacion=calificacion,
+            texto=texto_comentario,
+            fecha = timezone.now()
         )
         nuevo_comentario.save()  # Guarda en la BD
 
@@ -120,6 +122,7 @@ def listar_comentarios_json(request):
         'calificacion',
         'texto',
         'usuario_id',
+        'fecha',
         'usuario__nombre',  # JOIN automático para el nombre
         'usuario__apellido_paterno'  # JOIN automático para el apellido
     ).order_by('-id_comentario')

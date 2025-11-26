@@ -3,12 +3,13 @@ from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Pelicula
+from .models import Etiqueta
 from users.models import Usuario
 
 def lista_peliculas(request):
     peliculas_queryset = Pelicula.objects.all().values(
         'id', 'nombre', 'director', 'productora', 'año',
-        'calificacion', 'poster', 'trailer'
+        'calificacion', 'poster', 'trailer','sinopsis'
     )
 
     lista_peliculas = list(peliculas_queryset)
@@ -20,16 +21,6 @@ def peliculas_por_etiqueta(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return JsonResponse({'error': 'Falta token'}, status=401)
-
-    token_recibido = auth_header.split(' ')[1]
-
-    # --- USO DEL MODELO IMPORTADO ---
-    # Django busca en la tabla definida en users/models.py
-    if not Usuario.objects.filter(token=token_recibido).exists():
-        return JsonResponse({'error': 'Token inválido o expirado'}, status=401)
 
     try:
         data = json.loads(request.body)
@@ -47,7 +38,7 @@ def peliculas_por_etiqueta(request):
         # El SQL es más directo y eficiente aquí.
 
     query = """
-            SELECT p."idpelicula", p."nombre", p."director", p."año", p."poster"
+            SELECT p."idpelicula", p."nombre", p."director", p."año", p."poster",p."sinopsis"
             FROM Pelicula p
             INNER JOIN PeliculaEtiqueta pe ON p."idpelicula" = pe."idpelicula"
             WHERE pe."idetiqueta" = %s
@@ -69,7 +60,8 @@ def peliculas_por_etiqueta(request):
                 'nombre': row[1],
                 'director': row[2],
                 'año': row[3],
-                'poster': row[4]
+                'poster': row[4],
+                'sinopsis': row [5],
                 # Puedes agregar más campos si los pones en el SELECT
             }
             lista_resultado.append(peli)
@@ -114,7 +106,7 @@ def buscar_pelicula_json(request):
     # Si quieres coincidencia EXACTA, cambia __icontains por el signo igual (=)
     qs = Pelicula.objects.filter(nombre__icontains=nombre_busqueda).values(
         'id', 'nombre', 'director', 'productora', 'año',
-        'calificacion', 'poster', 'trailer'
+        'calificacion', 'poster', 'trailer', 'sinopsis',
     )
 
     resultados = list(qs)
@@ -122,4 +114,27 @@ def buscar_pelicula_json(request):
     return JsonResponse({
         'cantidad': len(resultados),
         'peliculas': resultados
+    }, safe=False)
+
+
+@csrf_exempt
+def listar_etiquetas(request):
+    # 1. VALIDAR MÉTODO (Solo GET)
+    # Al no recibir body, GET es el verbo HTTP correcto.
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Método no permitido. Usa GET.'}, status=405)
+
+    # 3. CONSULTA A LA BASE DE DATOS
+    # Usamos .values() para obtener un diccionario limpio y rápido
+    # Ordenamos por nombre alfabéticamente para que se vea ordenado en el front
+    etiquetas = Etiqueta.objects.all().order_by('nombre').values(
+        'id_etiqueta',
+        'nombre'
+    )
+
+    lista_etiquetas = list(etiquetas)
+
+    return JsonResponse({
+        'total': len(lista_etiquetas),
+        'etiquetas': lista_etiquetas
     }, safe=False)
