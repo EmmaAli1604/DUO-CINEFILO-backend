@@ -153,13 +153,14 @@ def register_user(request):
 
     Request JSON:
         {
-          "IdUsuario": "usuario1",
-          "Password": "mi_password",
-          "Nombre": "Juan",
-          "ApellidoPaterno": "Pérez",
-          "ApellidoMaterno": "García",
-          "FechaNacimiento": "2000-01-15",
-          "Genero": "M"
+          "idusuario": "usuario1",
+          "password": "mi_password",
+          "nombre": "Juan",
+          "apellidopaterno": "Pérez",
+          "apellidomaterno": "García",
+          "fechanacimiento": "2000-01-15",
+          "genero": "M"
+          "email": "prueba@gmail.com"
         }
 
     Respuestas:
@@ -169,13 +170,14 @@ def register_user(request):
     data = request.data
 
     required_fields = [
-        "IdUsuario",
-        "Password",
-        "Nombre",
-        "ApellidoPaterno",
-        "ApellidoMaterno",
-        "FechaNacimiento",
-        "Genero",
+        "idusuario",
+        "password",
+        "email",
+        "nombre",
+        "apellidopaterno",
+        "apellidomaterno",
+        "fechanacimiento",
+        "genero",
     ]
 
     missing = [f for f in required_fields if not data.get(f)]
@@ -188,13 +190,14 @@ def register_user(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    id_usuario = data["IdUsuario"]
-    password_plain = data["Password"]
-    nombre = data["Nombre"]
-    apellido_paterno = data["ApellidoPaterno"]
-    apellido_materno = data["ApellidoMaterno"]
-    fecha_nacimiento_str = data["FechaNacimiento"]
-    genero = data["Genero"]
+    id_usuario = data["idusuario"]
+    password_plain = data["password"]
+    nombre = data["nombre"]
+    apellido_paterno = data["apellidopaterno"]
+    apellido_materno = data["apellidomaterno"]
+    fecha_nacimiento_str = data["fechanacimiento"]
+    genero = data["genero"]
+    email = data["email"]
 
     # Validar longitud de IdUsuario (por si acaso)
     if len(id_usuario) > 15:
@@ -236,9 +239,10 @@ def register_user(request):
                     ApellidoMaterno,
                     FechaNacimiento,
                     Genero,
-                    Token
+                    Token,
+                    Email
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, NULL)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, NULL, %s)
                 """,
                 [
                     id_usuario,
@@ -248,6 +252,7 @@ def register_user(request):
                     apellido_materno,
                     fecha_nacimiento,
                     genero,
+                    email
                 ],
             )
     except IntegrityError:

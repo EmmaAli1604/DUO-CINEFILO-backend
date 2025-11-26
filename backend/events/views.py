@@ -13,15 +13,6 @@ def consultar_horarios_pelicula(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Método no permitido. Usa POST.'}, status=405)
 
-    # 2. AUTENTICACIÓN (Tu estándar Bearer Token)
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return JsonResponse({'error': 'Falta el header Authorization'}, status=401)
-
-    token_recibido = auth_header.split(' ')[1]
-
-    if not Usuario.objects.filter(token=token_recibido).exists():
-        return JsonResponse({'error': 'Token inválido o expirado'}, status=401)
 
     # 3. LEER JSON DEL BODY
     try:
