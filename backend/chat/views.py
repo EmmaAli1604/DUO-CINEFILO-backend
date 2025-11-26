@@ -1,12 +1,14 @@
 import os
 import aiml
 import glob
-from django.http import HttpResponse, JsonResponse
+import random
+import json
+from django.http import HttpResponse, JsonResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.conf import settings
 from google.cloud import texttospeech
-import json
+from catalog.views import lista_peliculas
 
 # --- INICIALIZACIÓN DEL KERNEL ---
 kernel = aiml.Kernel()
@@ -29,6 +31,27 @@ if aiml_files:
     print(f"🧠 CEREBRO CARGADO. Total neuronas: {total_neuronas}")
 else:
     print("❌ ALERTA: No encontré ningún archivo .aiml en la carpeta.")
+
+# -----------------------------------------------
+# LÓGICA DE PETICIONES
+# -----------------------------------------------
+def obtener_peticion_por_operacion(operacion):
+    if operacion == 'B':
+        return 'peliculas/find/'
+    elif operacion == 'S':
+        return ''
+    elif operacion == 'R':
+        # Llamamos a la vista existente para obtener la lista de películas
+        request = HttpRequest()
+        json_response = lista_peliculas(request)
+        # Decodificamos la respuesta JSON para obtener la lista de Python
+        peliculas = json.loads(json_response.content)
+        if peliculas:
+            # Elegimos una película al azar y la devolvemos como un objeto
+            return random.choice(peliculas)
+        return '' # Si no hay películas, devolvemos vacío
+    else:
+        return ''
 
 # -----------------------------------------------
 # VISTA STATELESS
@@ -57,12 +80,19 @@ def chatbot_view(request):
             
             response_text = kernel.respond(user_message.upper(), session_id)
             if not response_text:
-                response_text = "Lo siento, no tengo una respuesta programada para eso."
+                response_text = "Lo siento, no tengo una respuesta programada para eso. "
+
+            operacion = response_text[-1]
+            response_text = response_text[:-1]
+
+            peticion = obtener_peticion_por_operacion(operacion)
 
             # La respuesta incluye el contexto que se recibió
             return JsonResponse({
                 'respuesta': response_text,
-                'contexto': contexto
+                'contexto': contexto,
+                'peticion': peticion,
+                'operacion': operacion
             })
         else:
             return JsonResponse({'error': "El parámetro 'mensaje_usuario' es requerido en el JSON."}, status=400)
