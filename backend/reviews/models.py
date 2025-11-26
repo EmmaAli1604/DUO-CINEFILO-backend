@@ -14,7 +14,7 @@ class Comentario(models.Model):
 
     calificacion = models.BigIntegerField(db_column='calificacion')  # ¡Obligatorio por tu SQL!
     texto = models.CharField(db_column='texto', max_length=500, blank=True, null=True)
-
+    fecha = models.DateTimeField(db_column='fecha', blank=True, null=True)
     class Meta:
         db_table = 'comentario'
         managed = False

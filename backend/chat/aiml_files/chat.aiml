@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="1.0.1">
+
+    <category>
+        <pattern>HOLA</pattern>
+        <template>
+            <![CDATA[
+                ¡Hola! Soy PAMY. ¿Qué deseas hacer hoy?
+                <br/><br/>
+                <button class="btn-opcion" onclick="enviarOpcion('VER CARTELERA')">🎬 Ver Cartelera</button>
+                <button class="btn-opcion" onclick="enviarOpcion('RECOMENDAR')">⭐ Recomiéndame algo</button>
+                <button class="btn-opcion" onclick="enviarOpcion('AYUDA')">❓ Ayuda</button>
+            ]]>
+        </template>
+    </category>
+
+    <category>
+        <pattern>VER CARTELERA</pattern>
+        <template>
+            <![CDATA[
+                Perfecto, estas son las opciones de búsqueda:
+                <br/><br/>
+                <button class="btn-opcion" onclick="enviarOpcion('BUSCAR POR NOMBRE')">🔍 Por Nombre</button>
+                <button class="btn-opcion" onclick="enviarOpcion('VER ESTRENOS')">🔥 Estrenos</button>
+            ]]>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>
+            <![CDATA[
+                No entendí eso. Por favor selecciona una opción:
+                <br/><br/>
+                <button class="btn-opcion" onclick="enviarOpcion('HOLA')">🔄 Ir al Inicio</button>
+            ]]>
+        </template>
+    </category>
+
+</aiml>
