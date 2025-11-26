@@ -95,6 +95,14 @@
             ]]>
         </template>
     </category>
+    <category>
+        <pattern>ADIOS</pattern>
+        <template>
+            <![CDATA[
+               Fue un placer hablar contigo, vuelve pronto.
+            ]]>
+        </template>
+    </category>
     <!-- La regla genérica SIEMPRE debe ir al final para no interferir con las otras -->
     <category>
         <pattern>*</pattern>
