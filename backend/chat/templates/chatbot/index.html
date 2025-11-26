@@ -82,7 +82,7 @@
     .message.bot { align-items: flex-start; }
     .message.bot .chat-bubble { background: #e0e0e0; color: #000; }
 
-    /* ====== ESTILOS PARA LOS BOTONES DEL CHAT ====== */
+    /* ====== ESTILOS BOTONES ====== */
     .btn-opcion {
         background-color: #fff;
         border: 1px solid #4a90e2;
@@ -131,7 +131,7 @@
     button.secondary:hover { background: #c7c7c7; }
     button.small-btn { font-size: 0.8em; padding: 4px 8px; border-radius: 12px; }
 
-    /* ====== TEMA OSCURO ====== */
+    /* ====== MODO OSCURO ====== */
     body.dark { background-color: #121212; color: #e0e0e0; }
     body.dark .container { background: #1e1e1e; }
     body.dark header { background: #2a2f32; }
@@ -199,30 +199,79 @@
   </div>
 
   <script>
-    // 1. FUNCIÓN GLOBAL (Accesible para los botones HTML)
+    // 1. FUNCIÓN DE BOTONES (Debe ser global)
     function enviarOpcion(texto) {
         const input = document.getElementById('chat-input');
         const btn = document.getElementById('send-btn');
-
         if (input && btn) {
-            input.value = texto; // Escribe el texto en el input oculto
-            btn.click();         // Envía el formulario automáticamente
+            input.value = texto;
+            btn.click();
         }
     }
 
-    // 2. INICIALIZACIÓN (Se ejecuta al cargar la página)
+    // 2. FUNCIÓN DE VOZ (Llama a tu endpoint de Django)
+    async function hablarTexto(texto) {
+        if (!texto || texto.trim() === "") return;
+
+        console.log("🔊 Generando audio para:", texto.substring(0, 30) + "...");
+
+        try {
+            // Nota: Ajusta la URL si tu app se llama 'chatbot' en vez de 'chat' en urls.py
+            const response = await fetch('/chat/tts/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ texto: texto })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const audioUrl = URL.createObjectURL(blob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+            } else {
+                console.error("Error TTS:", response.status);
+            }
+        } catch (error) {
+            console.error("Error en petición TTS:", error);
+        }
+    }
+
+    // 3. LÓGICA AL CARGAR LA PÁGINA
     window.onload = function() {
-        // Scroll automático
+        // --- A) Scroll Automático ---
         const historyContainer = document.getElementById('chat-history');
         if (historyContainer) {
             historyContainer.scrollTop = historyContainer.scrollHeight;
         }
 
-        // Modo Oscuro
+        // --- B) Detectar respuesta del bot para hablar ---
+        const mensajes = document.querySelectorAll('.message');
+        if (mensajes.length > 0) {
+            const ultimoMensaje = mensajes[mensajes.length - 1];
+
+            // Si el último mensaje es del BOT, lo leemos
+            if (ultimoMensaje.classList.contains('bot')) {
+                // TRUCO: Clonamos el elemento para quitarle los botones antes de leer
+                // Así el bot no lee "Botón ver cartelera..."
+                const clon = ultimoMensaje.cloneNode(true);
+                const botones = clon.querySelectorAll('button');
+                botones.forEach(btn => btn.remove()); // Borramos botones del clon
+
+                const textoLimpio = clon.innerText;
+
+                // Pequeño delay para naturalidad
+                setTimeout(() => {
+                    hablarTexto(textoLimpio);
+                }, 600);
+            }
+        }
+
+        // --- C) Modo Oscuro ---
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
 
-        // Recuperar preferencia guardada
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark');
             if (themeToggle) themeToggle.textContent = '☀️';

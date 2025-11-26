@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<aiml version="1.0.1">
+<aiml version="1.0">
+
+    <!-- Regla para aprender el nombre del usuario (opcional) -->
+    <category>
+        <pattern>MI NOMBRE ES *</pattern>
+        <template>
+            <think><set name="username"><star/></set></think>
+            Hola <get name="username"/>, he guardado tu nombre.
+        </template>
+    </category>
+
+    <!-- Regla para recordar el nombre del usuario -->
+    <category>
+        <pattern>COMO ME LLAMO</pattern>
+        <template>
+            <condition name="username">
+                <li value="unknown">No me has dicho tu nombre todavía.</li>
+                <li>Te llamas <get name="username"/>.</li>
+            </condition>
+        </template>
+    </category>
 
     <category>
         <pattern>HOLA</pattern>
@@ -26,6 +46,7 @@
         </template>
     </category>
 
+    <!-- La regla genérica SIEMPRE debe ir al final para no interferir con las otras -->
     <category>
         <pattern>*</pattern>
         <template>
