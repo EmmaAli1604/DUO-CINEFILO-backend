@@ -24,7 +24,6 @@ class UserToken(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
-
         return f"Token for {self.user} ({'active' if self.is_active else 'inactive'})"
 
 class Usuario(models.Model):
