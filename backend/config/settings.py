@@ -32,7 +32,10 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'cineduo.lat',
+    '127.0.0.1',
+]
 
 DATABASES = {
     'default': {
@@ -115,12 +118,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
 
-#CORS_ALLOWED_ORIGINS = [
-#    "http://localhost:5173",
-#    "http://127.0.0.1:5173",
-#]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://192.168.1.73:5173",
+    "http://192.168.1.73:8000",
+    "http://192.168.1.73",
+    "http://cineduo.lat",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

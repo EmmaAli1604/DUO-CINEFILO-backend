@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aiml version="1.0">
 
-    <!-- Regla para aprender el nombre del usuario (opcional) -->
     <category>
-        <pattern>MI NOMBRE ES *</pattern>
-        <template>
-            <think><set name="username"><star/></set></think>
-            Hola <get name="username"/>, he guardado tu nombre.
-        </template>
-    </category>
-
-    <!-- Regla para recordar el nombre del usuario -->
-    <category>
-        <pattern>COMO ME LLAMO</pattern>
-        <template>
-            <condition name="username">
-                <li value="unknown">No me has dicho tu nombre todavía.</li>
-                <li>Te llamas <get name="username"/>.</li>
-            </condition>
-        </template>
+        <pattern>QUIEN ERES *</pattern>
+        <template>Soy Cineduo, un asistente virtual listo para ayudarte a encontrar qué ver hoy S</template>
     </category>
 
     <category>
@@ -70,6 +55,26 @@
         </template>
     </category>
     <category>
+        <pattern>* AYUDAR </pattern>
+        <template>
+            <![CDATA[
+               Claro que te puedo ayudar, dime tu problema S
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>* AYUDAR *</pattern>
+        <template>
+            <![CDATA[
+               Claro que te puedo ayudar, dime tu problema S
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>QUE PELICULAS HAY</pattern>
+        <template>Tenemos miles de títulos. Si buscas uno en específico, dímelo ahora B</template>
+    </category>
+    <category>
         <pattern>RECOMENDAR</pattern>
         <template>
             <![CDATA[
@@ -86,6 +91,106 @@
                 <button class="btn-opcion" onclick="enviarOpcion('HOLA')">🔄 Ir al Inicio</button>
             ]]>
         </template>
+    </category>
+    <category>
+        <pattern>GRACIAS *</pattern>
+        <template>
+            <![CDATA[
+               No hay de que. Es un placer ayudarte.
+               <br/><br/>
+                <button class="btn-opcion" onclick="enviarOpcion('HOLA')">🔄 Ir al Inicio</button>
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>* GRACIAS *</pattern>
+        <template>
+            <![CDATA[
+               No hay de que. Es un placer ayudarte.
+               <br/><br/>
+                <button class="btn-opcion" onclick="enviarOpcion('HOLA')">🔄 Ir al Inicio</button>
+            ]]>
+        </template>
+    </category>
+    <category>
+        <pattern>* AUDIO *</pattern>
+        <template>Verifica que no tengas el sitio silenciado en la pestaña del navegador S</template>
+    </category>
+    <category>
+        <pattern> AUDIO *</pattern>
+        <template>Verifica que no tengas el sitio silenciado en la pestaña del navegador S</template>
+    </category>
+    <category>
+        <pattern> AUDIO </pattern>
+        <template>Verifica que no tengas el sitio silenciado en la pestaña del navegador S</template>
+    </category>
+    <category>
+        <pattern> * CALIFICACIóN * </pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern>* CALIFICACION * </pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern> * CALIFICAR *</pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern> * CALIFICAR </pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern> CALIFICAR *</pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern> CALIFICAR </pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+     <category>
+        <pattern> * CALIFICO * </pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern>* COMENTAR *</pattern>
+        <template>Tu opinión ayuda a otros, no olvides dejar tu puntuación de estrellas después de ver una película S</template>
+    </category>
+    <category>
+        <pattern>* TRAILER *</pattern>
+        <template>Algunas Producciones no tienen su trailer subido a youtube de forma oficial, por eso no esta dispible en nuestra plataforma S</template>
+    </category>
+    <category>
+        <pattern>NO ENCUENTRO *</pattern>
+        <template>Nuestro catálogo se actualiza semanalmente, si no ves lo que buscas hoy, podría estar disponible muy pronto S</template>
+    </category>
+    <category>
+        <pattern>CONTACTAR *</pattern>
+        <template>Para atención personalizada, por favor envía un correo detallado a soporte@cineduo.com S</template>
+    </category>
+    <category>
+        <pattern>QUIERO BUSCAR *</pattern>
+        <template>Entendido, por favor escribe el nombre de la película que deseas ver B</template>
+    </category>
+    <category>
+        <pattern>* BUSCADOR *</pattern>
+        <template>Yo soy tu buscador. Dime, ¿qué película quieres encontrar hoy? B</template>
+    </category>
+    <category>
+        <pattern>BUSCA UNA *</pattern>
+        <template>Con gusto. Escribe el nombre exacto o parte del título para comenzar B</template>
+    </category>
+    <category>
+        <pattern>TIENEN PELICULAS *</pattern>
+        <template>Tenemos un gran catálogo. ¿Buscas alguna en específico? Dime el nombre B</template>
+    </category>
+    <category>
+        <pattern>AYUDAME A BUSCAR *</pattern>
+        <template>Por supuesto. Simplemente escribe el título de la película ahora R</template>
+    </category>
+    <category>
+        <pattern>* CONTACTAR *</pattern>
+        <template>Para atención personalizada, por favor envía un correo detallado a soporte@cineduo.com S</template>
     </category>
     <category>
         <pattern>ADIOS *</pattern>
