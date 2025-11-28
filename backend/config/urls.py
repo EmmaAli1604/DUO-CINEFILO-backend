@@ -13,10 +13,10 @@ from django.urls import path, include
 from catalog.views import list_movies  # <-- importa la vista
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('peliculas/', include('catalog.urls')),
-    path('comentario/', include('reviews.urls')),
-    path('chat/', include('chat.urls')),
-    path('horarios/', include('events.urls')),
+    path('cineduo.lat/api/admin/', admin.site.urls),
+    path('cineduo.lat/api/users/', include('users.urls')),
+    path('cineduo.lat/api/peliculas/', include('catalog.urls')),
+    path('cineduo.lat/api/comentario/', include('reviews.urls')),
+    path('cineduo.lat/api/chat/', include('chat.urls')),
+    path('cineduo.lat/api/horarios/', include('events.urls')),
 ]
