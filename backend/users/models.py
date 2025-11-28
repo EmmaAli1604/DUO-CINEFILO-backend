@@ -1,7 +1,3 @@
-"""Modelos relacionados con usuarios.
-
-Este m�dulo contiene modelos adicionales al usuario principal de Django.
-"""
 from django.db import models
 from django.conf import settings
 
