@@ -1,10 +1,10 @@
 """
-Archivo de configuraci�n principal de rutas del proyecto Django.
+Archivo de configuración principal de rutas del proyecto Django.
 
-Define los endpoints de nivel superior y enlaza los m�dulos correspondientes:
+Define los endpoints de nivel superior y enlaza los módulos correspondientes:
 - ``/admin/``: Panel administrativo de Django.
-- ``/api/users/``: Endpoints del m�dulo de usuarios (login, logout, registro).
-- ``/api/peliculas/``: Endpoint del cat�logo de pel�culas.
+- ``/api/users/``: Endpoints del módulo de usuarios (login, logout, registro).
+- ``/api/peliculas/``: Endpoint del catálogo de películas.
 
 Este archivo funciona como el enrutador central del backend.
 """
