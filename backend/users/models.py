@@ -1,3 +1,7 @@
+"""Modelos relacionados con usuarios.
+
+Este m�dulo contiene modelos adicionales al usuario principal de Django.
+"""
 from django.db import models
 from django.conf import settings
 
@@ -5,6 +9,10 @@ from django.conf import settings
 class UserToken(models.Model):
     """
     Guarda un token tipo 'Bearer' asociado a un usuario.
+        user (User): Usuario de Django al que pertenece el token.
+        token (str): Cadena �nica que representa el token de autenticaci�n.
+        created_at (datetime): Fecha y hora en que se cre� el token.
+        is_active (bool): Indica si el token sigue activo o fue invalidado.
     """
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

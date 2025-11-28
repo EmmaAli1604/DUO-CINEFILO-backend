@@ -17,6 +17,11 @@ def hash_password(password: str) -> str:
     Aplica una función hash a la password en texto plano.
     Ahora usamos SHA-256 como ejemplo, pero puedes cambiar
     la implementación cuando definas el algoritmo definitivo.
+
+    Args: 
+    password (str) contraseña proporcionada por el usuario
+    Returns :
+    str Hash hexadecimal generado con SHA-256
     """
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
