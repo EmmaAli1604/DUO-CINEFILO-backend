@@ -15,22 +15,18 @@ kernel = aiml.Kernel()
 kernel.verbose(True)
 
 aiml_dir = os.path.join(settings.BASE_DIR, 'chat', 'aiml_files')
-print(f"📂 Directorio AIML detectado: {aiml_dir}")
 
 aiml_files = glob.glob(os.path.join(aiml_dir, '*.aiml'))
 
 if aiml_files:
     for file_path in aiml_files:
         try:
-            print(f"📥 Cargando: {file_path}")
             kernel.learn(file_path)
         except Exception as e:
             print(f"❌ Error cargando {file_path}: {e}")
 
     total_neuronas = kernel.numCategories()
-    print(f"🧠 CEREBRO CARGADO. Total neuronas: {total_neuronas}")
 else:
-    print("❌ ALERTA: No encontré ningún archivo .aiml en la carpeta.")
 
 # -----------------------------------------------
 # LÓGICA DE PETICIONES
@@ -104,7 +100,6 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(settings.BASE_DIR, '
 
 @csrf_exempt
 def texto_a_voz(request):
-    print("--- INICIO DEBUG TTS ---")
     if request.method != 'POST':
         return JsonResponse({'error': 'Método no permitido'}, status=405)
 
