@@ -141,27 +141,35 @@ El backend estará disponible en:
 
 * **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
----
+### 8. Variables de entorno
 
-## Endpoints Principales 
+para funcionar, el backend requiere un archivo .env con las variables de entorno nesesarias, la estructura que requiere el .env es:
 
-### Usuarios
+```
 
-* `POST /api/users/register/`
-  Registra un nuevo usuario.
 
-* `POST /api/users/login/`
-  Inicia sesión y genera un token temporal.
+# Django
+SECRET_KEY=<Key>
+DEBUG=<Bool> 
 
----
+# Base de Datos
+DB_NAME=<Nombre de la BD>
+DB_USER=<Nombre de usuario>
+DB_PASSWORD=<password>
+DB_HOST=<Host> #para pruebas en local, usar localshost
+DB_PORT=<Puerto de la BD> 
+```
+### 9. Credenciales de google cloud
+para la funcion de TTS (Text-To-Speech), se usan los servicios de Google Cloud, especificamente el servicio de Text-to-Speech, para poder usar dicho servicio, se requiere hacer una cuenta y agregar la facturacion (al hacerlo; google solicitaun deposito que se te regresara en cuanto des de baja tu cuenta). los pasos a seguir para activar el servicio son:
 
-### Películas
-
-* `GET /api/peliculas/`
-  Devuelve una lista en formato JSON de todas las películas almacenadas en PostgreSQL.
-  Este endpoint es consumido directamente por el frontend.
-
----
+- ir a la [consola de google cloud](https://console.cloud.google.com/)
+- crea una cuenta y activa la facturacion
+- crea un nuevo proyecto
+- busca Text to Speech y agregalo al proyecto
+- ve a IAM y Administracion, en ese menu ve a cuentas de servicio
+- crea una nueva cuenta de servicio, dale el rol de propietario y dale listo
+- con la cuenta creada, selecionala y entra a claves, ahi seleciona generar nueva clave, al instante te descargara un archivo con las claves, tienes que guardarlo en el mismo lugar que el .env para que el proyecto funcione, ademas: debes renombrarlo como `google_credentials.json`
+  
 
 ## Licencia
 
