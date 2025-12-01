@@ -38,7 +38,7 @@ Este repositorio contiene el backend del proyecto **Dúo Cinéfilo**, una plataf
 │   ├── commerce/      # Lógica de compras/boletos (si aplica)
 │   └── manage.py
 ├── sql/
-│   └── scrpt.sql      # Script para crear las tablas de PostgreSQL
+│   └── script.sql      # Script para crear las tablas de PostgreSQL
 ├── docker-compose.yml # Configuración del contenedor PostgreSQL
 ├── requirements.txt   # Dependencias del backend
 └── README.md
