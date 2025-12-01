@@ -121,7 +121,7 @@ python manage.py migrate
 Ejecutar el script SQL dentro del contenedor:
 
 ```bash
-docker exec -i duo_postgres psql -U duo -d duo < sql/scrpt.sql
+docker exec -i duo_postgres psql -U duo -d duo < sql/script.sql
 ```
 
 Esto creará todas las tablas usadas por el backend:
